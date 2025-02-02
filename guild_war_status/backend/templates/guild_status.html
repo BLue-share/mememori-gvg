@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ギルド戦状況</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        /* 防衛PT数が15以下のときの赤色 */
+        .danger {
+            background-color: rgb(230, 30, 30);
+            color: white;
+        }
+        /* 防衛PT数が30以下のときの黄色 */
+        .warning {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
+    <script>
+        function getReloadInterval() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+
+            // 20:45 ～ 21:30 の間は 3秒おきに描画、それ以外は 30分おきに描画
+            if ((hours === 20 && minutes >= 45) || (hours === 21 && minutes < 30)) {
+                return 3000; // 3秒
+            } else {
+                return 1800000; // 30分（1800000ミリ秒）
+            }
+        }
+        
+        function scheduleReload() {
+            setTimeout(function() {
+                location.reload();
+                scheduleReload();
+            }, getReloadInterval());
+        }
+        
+        scheduleReload();
+    </script>
+</head>
+<body>
+    <h1>ギルドバトル状況</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>城名</th>
+                <th>防衛ギルド</th>
+                <th>攻撃ギルド</th>
+                <th>攻撃PT数</th>
+                <th>防衛PT数</th>
+                <th>状態</th>
+                <th>KO数</th> <!-- KO数列を追加 -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for castle in castles %}
+                <tr class="{% if castle.defense_party_count <= 15 %}danger{% elif castle.defense_party_count <= 30 %}warning{% endif %}">
+                    <td>{{ castle.castle_name }}</td>
+                    <td>{{ castle.guild_name }}</td>
+                    <td>{{ castle.attacker_guild_name }}</td>
+                    <td>{{ castle.attack_party_count }}</td>
+                    <td>{{ castle.defense_party_count }}</td>
+                    <td>{{ castle.state }}</td>
+                    <td>{{ castle.ko_count }}</td> <!-- KO数を表示 -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
