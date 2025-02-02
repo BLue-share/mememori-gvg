@@ -10,7 +10,7 @@ URL: [https://mentemori.icu/](https://mentemori.icu/)
 # Git のバージョン確認
 git --version
 ```
-- Git環境がない場合、Git公式サイト[https://git-scm.com/downloads]からインストーラーをダウンロードして実行
+- Git環境がない場合、[Git公式サイト](https://git-scm.com/downloads)からインストーラーをダウンロードして実行
 
 2. **リポジトリをクローン**
 ```powershell
@@ -22,7 +22,7 @@ git clone https://github.com/BLue-share/mememori-gvg.git
 - リポジトリ内の`check_env.bat`を実行して、Git、Python、Node.js の環境が整っているか確認してください。
 
 4. **Pythonの実行環境があること**
-- Pythonの実行環境がない場合、Python公式サイト[https://www.python.org/downloads/] からインストーラーをダウンロードして実行
+- Pythonの実行環境がない場合、[Python公式サイト](https://www.python.org/downloads/) からインストーラーをダウンロードして実行
 
 5. **Node.jsの実行環境があること**
 - Node.jsの実行環境がない場合、リポジトリをクローンした後にインストーラーフォルダから
