@@ -5,7 +5,7 @@ URL: [https://mentemori.icu/](https://mentemori.icu/)
 現在はW17のみ対応
 
 ## **前提確認**
-1. **git環境が整っているか確認**
+1. **Git環境が整っているか確認**
 ```powershell
 # Git のバージョン確認
 git --version
@@ -21,10 +21,10 @@ git clone https://github.com/BLue-share/mememori-gvg.git
 3. **コマンドが実行できるか確認**
   - リポジトリ内の`check_env.bat`を実行して、Git、Python、Node.js の環境が整っているか確認してください。
 
-4. **Pythonの実行環境があること**
+4. **Pythonの実行環境が整っているか確認**
   - Pythonの実行環境がない場合、[Python公式サイト](https://www.python.org/downloads/) からインストーラーをダウンロードして実行（新しいタブで開くには Ctrl+クリック / 右クリックで「新しいタブで開く」を選択）
 
-5. **Node.jsの実行環境があること**
+5. **Node.jsの実行環境が整っている確認**
   - Node.jsの実行環境がない場合、リポジトリをクローンした後にインストーラーフォルダから
 Node.jsのインストーラーを実行する
 
