@@ -4,15 +4,32 @@ URL: [https://mentemori.icu/](https://mentemori.icu/)
 ## **メモ**
 現在はW17のみ対応
 
-## **前提**
-1. **gitコマンドが実行できること**
-できない場合は公式サイトからインストーラーをダウンロードして実行
+## **前提確認**
+1. **Git環境が整っているか確認**
+```powershell
+# Git のバージョン確認
+git --version
+```
+  - Git環境がない場合、[Git公式サイト](https://git-scm.com/downloads)からインストーラーをダウンロードして実行（新しいタブで開くには Ctrl+クリック / 右クリックで「新しいタブで開く」を選択）
 
-2. **pythonの実行環境があること**
+2. **リポジトリをクローン**
+```powershell
+# Git環境を構築後にリポジトリをクローンする
+git clone https://github.com/BLue-share/mememori-gvg.git
+```
 
-3. **node.jsの環境があること**
-ない場合はリポジトリをクローンした後にインストーラーフォルダから
-node.jsのインストーラーを実行する
+3. **コマンドが実行できるか確認**
+  - リポジトリ内の`check_env.bat`を実行して、Git、Python、Node.js の環境が整っているか確認してください。
+
+4. **Pythonの実行環境が整っているか確認**
+  - Pythonの実行環境がない場合、[Python公式サイト](https://www.python.org/downloads/) からインストーラーをダウンロードして実行（新しいタブで開くには Ctrl+クリック / 右クリックで「新しいタブで開く」を選択）
+
+5. **Node.jsの実行環境が整っている確認**
+  - Node.jsの実行環境がない場合、リポジトリをクローンした後にインストーラーフォルダから
+Node.jsのインストーラーを実行する
+
+6. **最後にbatを実行して環境構築されたか確認**
+  - リポジトリ内の`check_env.bat`を実行して、Git、Python、Node.js の環境が整っているか確認してください。
 
 ## **手順概要**
 
@@ -39,7 +56,7 @@ node.jsのインストーラーを実行する
 仮想環境の作成とアクティベート: venv（仮想環境）を作成して、依存関係をインストールします。
 ```powershell
 # Gitからリポジトリをクローン: クローンしたリポジトリのルートディレクトリに移動
-git clone https://github.com/BLue-share/mememori-gvg.git
+# git clone https://github.com/BLue-share/mememori-gvg.git
 cd guild_war_status
 
 # 仮想環境の作成
