@@ -27,7 +27,7 @@
             background-color: rgb(230, 30, 30);
             color: white;
         }
-        /* 防衛PT数が30以下のときの黄色 */
+        /* 防衛PT数が60以下のときの黄色 */
         .warning {
             background-color: yellow;
             color: black;
@@ -73,7 +73,7 @@
         </thead>
         <tbody>
             {% for castle in castles %}
-                <tr class="{% if castle.defense_party_count <= 15 %}danger{% elif castle.defense_party_count <= 30 %}warning{% endif %}">
+                <tr class="{% if castle.defense_party_count <= 15 %}danger{% elif castle.defense_party_count <= 60 %}warning{% endif %}">
                     <td>{{ castle.castle_name }}</td>
                     <td>{{ castle.guild_name }}</td>
                     <td>{{ castle.attacker_guild_name }}</td>

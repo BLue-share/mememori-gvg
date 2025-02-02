@@ -90,4 +90,4 @@ npm install
 Set-ExecutionPolicy -ExecutionPolicy Restricted -Scope Process -Force
 ```
 5. **ギルドバトル状況画面にアクセス**
- URL: [http://127.0.0.1:8000/guild/status/](http://127.0.0.1:8000/guild/status/)
+- URL: [http://127.0.0.1:8000/guild/status/](http://127.0.0.1:8000/guild/status/)
