@@ -10,7 +10,7 @@ URL: [https://mentemori.icu/](https://mentemori.icu/)
 # Git のバージョン確認
 git --version
 ```
-- Git環境がない場合、[Git公式サイト](https://git-scm.com/downloads)からインストーラーをダウンロードして実行
+  - Git環境がない場合、[Git公式サイト](https://git-scm.com/downloads)からインストーラーをダウンロードして実行（新しいタブで開くには Ctrl+クリック / 右クリックで「新しいタブで開く」を選択）
 
 2. **リポジトリをクローン**
 ```powershell
@@ -19,17 +19,17 @@ git clone https://github.com/BLue-share/mememori-gvg.git
 ```
 
 3. **コマンドが実行できるか確認**
-- リポジトリ内の`check_env.bat`を実行して、Git、Python、Node.js の環境が整っているか確認してください。
+  - リポジトリ内の`check_env.bat`を実行して、Git、Python、Node.js の環境が整っているか確認してください。
 
 4. **Pythonの実行環境があること**
-- Pythonの実行環境がない場合、[Python公式サイト](https://www.python.org/downloads/) からインストーラーをダウンロードして実行
+  - Pythonの実行環境がない場合、[Python公式サイト](https://www.python.org/downloads/) からインストーラーをダウンロードして実行（新しいタブで開くには Ctrl+クリック / 右クリックで「新しいタブで開く」を選択）
 
 5. **Node.jsの実行環境があること**
-- Node.jsの実行環境がない場合、リポジトリをクローンした後にインストーラーフォルダから
+  - Node.jsの実行環境がない場合、リポジトリをクローンした後にインストーラーフォルダから
 Node.jsのインストーラーを実行する
 
 6. **最後にbatを実行して環境構築されたか確認**
-- リポジトリ内の`check_env.bat`を実行して、Git、Python、Node.js の環境が整っているか確認してください。
+  - リポジトリ内の`check_env.bat`を実行して、Git、Python、Node.js の環境が整っているか確認してください。
 
 ## **手順概要**
 
