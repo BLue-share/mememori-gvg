@@ -4,9 +4,9 @@ URL: [https://mentemori.icu/](https://mentemori.icu/)
 ## **メモ**
 フォームから取得したいギルバトのワールドを入力して、結果を表示
 防衛PT数が15以下のときの赤色、60以下のときの黄色
-[入力フォーム](./guild_war_status/backend/image/guild_form.png)
-[ギルバト状況](./guild_war_status/backend/image/guild_result.png)
-[フィルター機能](./guild_war_status/backend/image/guild_filter.png)
+- ![入力フォーム](./guild_war_status/backend/image/guild_form.png)
+- ![ギルバト状況](./guild_war_status/backend/image/guild_result.png)
+- ![フィルター機能](./guild_war_status/backend/image/guild_filter.png)
 
 ## **前提確認**
 1. **Git環境が整っているか確認**
