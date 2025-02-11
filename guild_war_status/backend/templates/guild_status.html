@@ -9,7 +9,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            margin: 20px;
+            margin: 0;
             padding: 20px;
             background-color: #f4f5f7;
         }
@@ -21,32 +21,51 @@
             margin-bottom: 20px;
         }
 
-        .error-message {
-            text-align: center;
-            color: red;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
         .form-button {
             display: inline-block;
-            background-color: #4e73df;
+            background-color: #007bff;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             position: fixed;
             bottom: 20px;
             right: 20px;
+            transition: background 0.3s ease, transform 0.2s ease;
         }
 
         .form-button:hover {
-            background-color: #224abe;
+            background-color: #0056b3;
             transform: scale(1.05);
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            width: 200px;
+            transition: 0.3s;
+        }
+
+        select:hover, select:focus {
+            border-color: #007bff;
+            outline: none;
         }
 
         .table-container {
@@ -54,70 +73,45 @@
             overflow-x: auto;
             background: white;
             border-radius: 12px;
-            padding: 15px;
+            padding: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th {
-            position: sticky;
-            top: 0;
-            background-color: #f8f9fa;
-            z-index: 10;
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            text-align: center;
         }
 
-        th, td {
-            padding: 12px 15px;
+        td {
+            padding: 12px;
             text-align: center;
             border-bottom: 1px solid #ddd;
         }
 
-        select {
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-            font-size: 14px;
-            width: 180px;
-            transition: 0.3s;
+        tbody tr:hover {
+            background-color: #f1f1f1;
         }
 
-        select:hover {
-            border-color: #4e73df;
-        }
-
-        .filter-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        /* 防衛PT数が15以下のときの赤色 */
         .danger {
             background-color: rgb(230, 30, 30) !important;
             color: white !important;
         }
-        /* 防衛PT数が60以下のときの黄色 */
+
         .warning {
             background-color: yellow !important;
             color: black !important;
         }
-
-        /* レスポンシブデザイン: スクリーンサイズが小さい場合にテーブルの横スクロールを有効にする */
-        @media (max-width: 768px) {
-            .table-container {
-                overflow-x: scroll;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            table {
-                width: 100%;
-                min-width: 600px;
-            }
-        }
     </style>
     <script>
-        // フィルターの結果をlocalStorageに保存
         function saveFilters() {
             const filters = {
                 castleName: document.getElementById("castleNameFilter").value,
@@ -127,7 +121,6 @@
             localStorage.setItem("filters", JSON.stringify(filters));
         }
 
-        // ページ読み込み時に保存されたフィルターを復元
         function restoreFilters() {
             const savedFilters = JSON.parse(localStorage.getItem("filters"));
             if (savedFilters) {
@@ -135,9 +128,9 @@
                 document.getElementById("guildNameFilter").value = savedFilters.guildName || '';
                 document.getElementById("attackerNameFilter").value = savedFilters.attackerName || '';
             }
+            filterTable();
         }
 
-        // テーブルデータをフィルタリング
         function filterTable() {
             const rows = document.querySelectorAll("table tbody tr");
             const castleNameFilter = document.getElementById("castleNameFilter").value.toLowerCase();
@@ -150,62 +143,84 @@
                 const attackerName = row.cells[2].innerText.toLowerCase();
 
                 const matchesFilter = 
-                    castleName.includes(castleNameFilter) && 
-                    guildName.includes(guildNameFilter) && 
-                    attackerName.includes(attackerNameFilter);
+                    (castleName.includes(castleNameFilter) || castleNameFilter === '') && 
+                    (guildName.includes(guildNameFilter) || guildNameFilter === '') &&
+                    (attackerName.includes(attackerNameFilter) || attackerNameFilter === '');
 
                 row.style.display = matchesFilter ? '' : 'none';
             });
         }
 
-        // ページが読み込まれたときにフィルターを復元し、テーブルをフィルタリング
-        window.onload = function () {
-            restoreFilters();
-            filterTable();
+        function setupAutoRefresh() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+
+            let refreshInterval = 1800000; // デフォルトは30分
+
+            if ((hour === 20 && minute >= 45) || (hour === 21 && minute <= 30)) {
+                refreshInterval = 3000; // 3秒おき
+            }
+
+            setInterval(() => {
+                location.reload();
+            }, refreshInterval);
         }
+
+        function populateFilterOptions() {
+            const castleNames = new Set();
+            const guildNames = new Set();
+            const attackerNames = new Set();
+
+            {% for castle in castles %}
+                castleNames.add("{{ castle.castle_name }}");
+                guildNames.add("{{ castle.guild_name }}");
+                attackerNames.add("{{ castle.attacker_guild_name }}");
+            {% endfor %}
+
+            function updateSelectOptions(selectId, options) {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">選択なし</option>';
+                options.forEach(value => {
+                    const option = document.createElement("option");
+                    option.value = value;
+                    option.textContent = value;
+                    select.appendChild(option);
+                });
+            }
+
+            updateSelectOptions("castleNameFilter", castleNames);
+            updateSelectOptions("guildNameFilter", guildNames);
+            updateSelectOptions("attackerNameFilter", attackerNames);
+
+            restoreFilters();
+        }
+
+        window.onload = function () {
+            populateFilterOptions();
+            setupAutoRefresh();
+        };
     </script>
 </head>
 <body>
     <h1>ギルバト状況 - 結果</h1>
 
-    <!-- フォームページに戻るボタン -->
     <a href="/guild/form/" class="form-button">フォームページに戻る</a>
 
-    <!-- エラーメッセージの表示 -->
-    {% if error %}
-        <p class="error-message">{{ error }}</p>
-    {% endif %}
-
-    <!-- フィルター部分 -->
     <div class="filter-container">
         <div>
-            <label for="castleNameFilter">城名でフィルタ:</label>
-            <select id="castleNameFilter" onchange="saveFilters(); filterTable();">
-                <option value="">選択なし</option>
-                {% for castle in castles %}
-                    <option value="{{ castle.castle_name }}">{{ castle.castle_name }}</option>
-                {% endfor %}
-            </select>
+            <label for="castleNameFilter">城名:</label>
+            <select id="castleNameFilter" onchange="saveFilters(); filterTable();"></select>
         </div>
 
         <div>
-            <label for="guildNameFilter">防衛ギルドでフィルタ:</label>
-            <select id="guildNameFilter" onchange="saveFilters(); filterTable();">
-                <option value="">選択なし</option>
-                {% for castle in castles %}
-                    <option value="{{ castle.guild_name }}">{{ castle.guild_name }}</option>
-                {% endfor %}
-            </select>
+            <label for="guildNameFilter">防衛ギルド:</label>
+            <select id="guildNameFilter" onchange="saveFilters(); filterTable();"></select>
         </div>
 
         <div>
-            <label for="attackerNameFilter">攻撃ギルドでフィルタ:</label>
-            <select id="attackerNameFilter" onchange="saveFilters(); filterTable();">
-                <option value="">選択なし</option>
-                {% for castle in castles %}
-                    <option value="{{ castle.attacker_guild_name }}">{{ castle.attacker_guild_name }}</option>
-                {% endfor %}
-            </select>
+            <label for="attackerNameFilter">攻撃ギルド:</label>
+            <select id="attackerNameFilter" onchange="saveFilters(); filterTable();"></select>
         </div>
     </div>
 
