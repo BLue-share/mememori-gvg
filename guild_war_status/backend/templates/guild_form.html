@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ギルバト状況 - フォーム</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        select, input[type="text"], button {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: 0.3s;
+        }
+        button {
+            background-color: #4e73df;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        button:hover {
+            background-color: #224abe;
+            transform: scale(1.05);
+        }
+    </style>
+    <script>
+        function handleWorldInputKeyPress(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // デフォルトのフォーム送信を防ぐ
+                fetchGuildData();
+            }
+        }
+
+        async function fetchGuildData() {
+            const server = document.getElementById("serverSelect").value || "1";
+            let world = document.getElementById("worldInput").value.trim();
+
+            // 1桁・2桁の場合は左を0で埋める
+            if (world.length > 0) {
+                world = world.padStart(3, '0');
+            }
+
+            // フォームを作成して送信する
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = "/guild/status/";  // 結果ページに遷移する
+
+            // CSRFトークンを追加
+            const csrfInput = document.createElement("input");
+            csrfInput.type = "hidden";
+            csrfInput.name = "csrfmiddlewaretoken";
+            csrfInput.value = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+            form.appendChild(csrfInput);
+
+            // サーバーID
+            const serverInput = document.createElement("input");
+            serverInput.type = "hidden";
+            serverInput.name = "server";
+            serverInput.value = server;
+            form.appendChild(serverInput);
+
+            // ワールドID（空でなければ追加）
+            if (world !== "") {
+                const worldInput = document.createElement("input");
+                worldInput.type = "hidden";
+                worldInput.name = "world";
+                worldInput.value = world;
+                form.appendChild(worldInput);
+            }
+
+            // フォームを送信
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        window.onload = function () {
+            const savedServer = localStorage.getItem("selectedServer");
+            const savedWorld = localStorage.getItem("selectedWorld");
+
+            if (savedServer) document.getElementById("serverSelect").value = savedServer;
+            if (savedWorld) document.getElementById("worldInput").value = savedWorld;
+        };
+    </script>
+</head>
+<body>
+    <h1>ギルバト状況 - フォーム</h1>
+
+    <form method="POST" action="/guild/status/">
+        {% csrf_token %}
+    </form>
+
+    <div class="form-container">
+        <label for="serverSelect">サーバー:</label>
+        <select id="serverSelect">
+            <option value="1">Japan</option>
+            <option value="2">Korea</option>
+            <option value="3">Asia</option>
+            <option value="4">North America</option>
+            <option value="5">Europe</option>
+            <option value="6">Global</option>
+        </select>
+
+        <label for="worldInput">ワールド:</label>
+        <input type="text" id="worldInput" maxlength="3" placeholder="ワールドを入力" onkeypress="handleWorldInputKeyPress(event)">
+
+        <button type="button" onclick="fetchGuildData()">データ取得</button>
+    </div>
+
+    <p id="errorMessage" class="error-message"></p>
+
+</body>
+</html>

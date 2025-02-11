@@ -3,87 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ギルド戦状況</title>
+    <title>ギルバト状況 - 結果</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 20px;
             padding: 20px;
+            background-color: #f4f5f7;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
+
+        h1 {
             text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
         }
+
+        .error-message {
+            text-align: center;
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .form-button {
+            display: inline-block;
+            background-color: #4e73df;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .form-button:hover {
+            background-color: #224abe;
+            transform: scale(1.05);
+        }
+
+        .table-container {
+            max-width: 100%;
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
         th {
-            background-color: #f4f4f4;
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 10;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            font-size: 14px;
+            width: 180px;
+            transition: 0.3s;
+        }
+
+        select:hover {
+            border-color: #4e73df;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
         }
         /* 防衛PT数が15以下のときの赤色 */
         .danger {
-            background-color: rgb(230, 30, 30);
-            color: white;
+            background-color: rgb(230, 30, 30) !important;
+            color: white !important;
         }
         /* 防衛PT数が60以下のときの黄色 */
         .warning {
-            background-color: yellow;
-            color: black;
+            background-color: yellow !important;
+            color: black !important;
+        }
+
+        /* レスポンシブデザイン: スクリーンサイズが小さい場合にテーブルの横スクロールを有効にする */
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: scroll;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                width: 100%;
+                min-width: 600px;
+            }
         }
     </style>
     <script>
-        function getReloadInterval() {
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
+        // フィルターの結果をlocalStorageに保存
+        function saveFilters() {
+            const filters = {
+                castleName: document.getElementById("castleNameFilter").value,
+                guildName: document.getElementById("guildNameFilter").value,
+                attackerName: document.getElementById("attackerNameFilter").value,
+            };
+            localStorage.setItem("filters", JSON.stringify(filters));
+        }
 
-            // 20:45 ～ 21:30 の間は 3秒おきに描画、それ以外は 30分おきに描画
-            if ((hours === 20 && minutes >= 45) || (hours === 21 && minutes < 30)) {
-                return 3000; // 3秒
-            } else {
-                return 1800000; // 30分（1800000ミリ秒）
+        // ページ読み込み時に保存されたフィルターを復元
+        function restoreFilters() {
+            const savedFilters = JSON.parse(localStorage.getItem("filters"));
+            if (savedFilters) {
+                document.getElementById("castleNameFilter").value = savedFilters.castleName || '';
+                document.getElementById("guildNameFilter").value = savedFilters.guildName || '';
+                document.getElementById("attackerNameFilter").value = savedFilters.attackerName || '';
             }
         }
-        
-        function scheduleReload() {
-            setTimeout(function() {
-                location.reload();
-                scheduleReload();
-            }, getReloadInterval());
+
+        // テーブルデータをフィルタリング
+        function filterTable() {
+            const rows = document.querySelectorAll("table tbody tr");
+            const castleNameFilter = document.getElementById("castleNameFilter").value.toLowerCase();
+            const guildNameFilter = document.getElementById("guildNameFilter").value.toLowerCase();
+            const attackerNameFilter = document.getElementById("attackerNameFilter").value.toLowerCase();
+
+            rows.forEach(row => {
+                const castleName = row.cells[0].innerText.toLowerCase();
+                const guildName = row.cells[1].innerText.toLowerCase();
+                const attackerName = row.cells[2].innerText.toLowerCase();
+
+                const matchesFilter = 
+                    castleName.includes(castleNameFilter) && 
+                    guildName.includes(guildNameFilter) && 
+                    attackerName.includes(attackerNameFilter);
+
+                row.style.display = matchesFilter ? '' : 'none';
+            });
         }
-        
-        scheduleReload();
+
+        // ページが読み込まれたときにフィルターを復元し、テーブルをフィルタリング
+        window.onload = function () {
+            restoreFilters();
+            filterTable();
+        }
     </script>
 </head>
 <body>
-    <h1>ギルドバトル状況</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>城名</th>
-                <th>防衛ギルド</th>
-                <th>攻撃ギルド</th>
-                <th>攻撃PT数</th>
-                <th>防衛PT数</th>
-                <th>状態</th>
-                <th>KO数</th> <!-- KO数列を追加 -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for castle in castles %}
-                <tr class="{% if castle.defense_party_count <= 15 %}danger{% elif castle.defense_party_count <= 60 %}warning{% endif %}">
-                    <td>{{ castle.castle_name }}</td>
-                    <td>{{ castle.guild_name }}</td>
-                    <td>{{ castle.attacker_guild_name }}</td>
-                    <td>{{ castle.attack_party_count }}</td>
-                    <td>{{ castle.defense_party_count }}</td>
-                    <td>{{ castle.state }}</td>
-                    <td>{{ castle.ko_count }}</td> <!-- KO数を表示 -->
+    <h1>ギルバト状況 - 結果</h1>
+
+    <!-- フォームページに戻るボタン -->
+    <a href="/guild/form/" class="form-button">フォームページに戻る</a>
+
+    <!-- エラーメッセージの表示 -->
+    {% if error %}
+        <p class="error-message">{{ error }}</p>
+    {% endif %}
+
+    <!-- フィルター部分 -->
+    <div class="filter-container">
+        <div>
+            <label for="castleNameFilter">城名でフィルタ:</label>
+            <select id="castleNameFilter" onchange="saveFilters(); filterTable();">
+                <option value="">選択なし</option>
+                {% for castle in castles %}
+                    <option value="{{ castle.castle_name }}">{{ castle.castle_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="guildNameFilter">防衛ギルドでフィルタ:</label>
+            <select id="guildNameFilter" onchange="saveFilters(); filterTable();">
+                <option value="">選択なし</option>
+                {% for castle in castles %}
+                    <option value="{{ castle.guild_name }}">{{ castle.guild_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="attackerNameFilter">攻撃ギルドでフィルタ:</label>
+            <select id="attackerNameFilter" onchange="saveFilters(); filterTable();">
+                <option value="">選択なし</option>
+                {% for castle in castles %}
+                    <option value="{{ castle.attacker_guild_name }}">{{ castle.attacker_guild_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>城名</th>
+                    <th>防衛ギルド</th>
+                    <th>攻撃ギルド</th>
+                    <th>攻撃PT数</th>
+                    <th>防衛PT数</th>
+                    <th>状態</th>
+                    <th>KO数</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for castle in castles %}
+                    <tr class="{% if castle.defense_party_count <= 15 %}danger{% elif castle.defense_party_count <= 60 %}warning{% endif %}">
+                        <td>{{ castle.castle_name }}</td>
+                        <td>{{ castle.guild_name }}</td>
+                        <td>{{ castle.attacker_guild_name }}</td>
+                        <td>{{ castle.attack_party_count }}</td>
+                        <td>{{ castle.defense_party_count }}</td>
+                        <td>{{ castle.state }}</td>
+                        <td>{{ castle.ko_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
