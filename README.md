@@ -2,7 +2,11 @@
 URL: [https://mentemori.icu/](https://mentemori.icu/)
 
 ## **メモ**
-現在はW17のみ対応
+フォームから取得したいギルバトのワールドを入力して、結果を表示
+防衛PT数が15以下のときの赤色、60以下のときの黄色
+![入力フォーム](./guild_war_status/backend/image/guild_form.png)
+![ギルバト状況](./guild_war_status/backend/image/guild_result.png)
+![フィルター機能](./guild_war_status/backend/image/guild_filter.png)
 
 ## **前提確認**
 1. **Git環境が整っているか確認**
@@ -42,7 +46,9 @@ Node.jsのインストーラーを実行する
      - **HTTPサーバー**: フロントエンドのビルドされた静的ファイルを提供するサーバーを起動します。
 
 2. **ギルドバトル状況画面にアクセス**
-   - 下記URLでギルドバトルの状況を表示します。
+   - 下記URLでギルドバトルのワールド入力フォームを表示します。
+     - URL: [http://127.0.0.1:8000/guild/form/](http://127.0.0.1:8000/guild/form/)
+   - 入力フォームで入力したワールドのギルドバトルの状況を表示します。
      - URL: [http://127.0.0.1:8000/guild/status/](http://127.0.0.1:8000/guild/status/)
 
 ---
@@ -89,5 +95,5 @@ npm install
 # 実行ポリシーの変更を元に戻す（オプション）
 Set-ExecutionPolicy -ExecutionPolicy Restricted -Scope Process -Force
 ```
-5. **ギルドバトル状況画面にアクセス**
-- URL: [http://127.0.0.1:8000/guild/status/](http://127.0.0.1:8000/guild/status/)
+5. **ギルドバトル状況画面フォームにアクセス**
+- URL: [http://127.0.0.1:8000/guild/form/](http://127.0.0.1:8000/guild/form/)
